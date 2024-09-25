@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+
+  - name: WELLBEFORE
+    schema: raw
+    tables:
+      - name: bbraw
+        identifier: BB_RAW
