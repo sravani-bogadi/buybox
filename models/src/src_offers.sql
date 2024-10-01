@@ -6,7 +6,7 @@ WITH source_data AS(
 flatten_payload as (
     select 
      raw_data:"Payload"::Object:"AnyOfferChangedNotification"::Object:"OfferChangeTrigger":Object:"ASIN"::STRING AS ASIN,
-     raw_data:"Payload"::Object:"AnyOfferChangedNotification"::Object:"offers"::Array AS doop,
+     raw_data:"Payload"::Object:"AnyOfferChangedNotification"::Object:"Offers"::Array AS doop,
      raw_data:"NotificationMetadata"::Object:"NotificationId"::STRING as NotificationId,
      from source_data
 
@@ -24,4 +24,4 @@ select
  from flatten_payload , lateral flatten(input=> flatten_payload.doop) AS offer
 )
 
-select offerID,NotificationId,SellerId,IsBuyBoxWinner,Amount,CurrencyCode,IsOfferNationalPrime,IsOfferPrime,SubCondition from flatten_offers
+select * from flatten_offers

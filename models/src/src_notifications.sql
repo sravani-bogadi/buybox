@@ -6,6 +6,7 @@ WITH source_data AS(
 flatten_payload as (
     select 
      raw_data:"Payload"::Object:"AnyOfferChangedNotification"::Object:"Offers"::Array AS doop,
+     raw_data:"Payload"::Object:"AnyOfferChangedNotification"::Object:"OfferChangeTrigger"::Array AS duplicate,
      raw_data:"NotificationMetadata"::Array as dup,
      raw_data:"NotificationVersion"::STRING as NotificationVersion,
      raw_data:"NotificationType"::STRING as NotificationType
@@ -13,7 +14,7 @@ flatten_payload as (
 
 )
 select 
-  ASIN
+  duplicate_offers.value:"ASIN"::STRING as ASIN,
   offers.value:"NotificationId":: STRING as NotificationId,
   offers.value:"PublishTime":: STRING  as PublishTime,
   NotificationType,
@@ -21,4 +22,5 @@ select
   offers.value:"ApplicationId":: STRING as ApplicationId,
   offers.value:"SubscriptionId":: STRING as SubscriptionId
  from flatten_payload , lateral flatten(input=> flatten_payload.doop) AS offer,
- lateral flatten(input=> flatten_payload.dup) AS offers
+ lateral flatten(input=> flatten_payload.dup) AS offers,
+ lateral flatten(input=> flatten_payload.duplicate) AS duplicate_offers,
